@@ -7,7 +7,7 @@
 import { useMemo, useState } from 'react';
 import { Search, Filter, X } from 'lucide-react';
 import { Badge, Button, Card, CardContent, CardHeader, CardTitle, Input } from '@x-cartographer/ui';
-import { UserJourney, UserStory, Priority } from '@/types';
+import { UserJourney, UserStory, Priority, getPriorityConfig } from '@/types';
 import { StoryCard } from './story-card';
 import { cn } from '@/lib/utils';
 
@@ -154,7 +154,7 @@ export function StoryList({ journeys }: StoryListProps) {
                           : 'bg-muted hover:bg-muted/80'
                       )}
                     >
-                      {priority === 'all' ? '全部' : priorityConfigLabels[priority]}
+                      {priority === 'all' ? '全部' : getPriorityConfig(priority as Priority).label}
                     </button>
                   ))}
                 </div>
@@ -232,8 +232,3 @@ export function StoryList({ journeys }: StoryListProps) {
   );
 }
 
-const priorityConfigLabels: Record<string, string> = {
-  high: '高',
-  medium: '中',
-  low: '低',
-};

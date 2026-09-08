@@ -42,6 +42,8 @@ import { Badge } from '@x-cartographer/ui';
 import { Separator } from '@x-cartographer/ui';
 import { Button } from '@x-cartographer/ui';
 import { StatusBadge } from './status-badge';
+import { PriorityBadge } from '@/components/common/priority-badge';
+import { InfoItem } from '@/components/common/info-item';
 import { cn } from '@/lib/utils';
 import type { Task, TaskStatus } from '@/types';
 
@@ -61,16 +63,6 @@ interface TaskDetailSheetProps {
   /** 更新依赖关系的回调（TASK-062） */
   onUpdateDependencies?: (taskId: string, dependencies: string[]) => Promise<void>;
 }
-
-const priorityConfig: Record<string, { label: string; color: string }> = {
-  P0: { label: 'P0 - 紧急', color: 'text-red-600 bg-red-50 border-red-200' },
-  P1: {
-    label: 'P1 - 高',
-    color: 'text-orange-600 bg-orange-50 border-orange-200',
-  },
-  P2: { label: 'P2 - 中', color: 'text-blue-600 bg-blue-50 border-blue-200' },
-  P3: { label: 'P3 - 低', color: 'text-gray-600 bg-gray-50 border-gray-200' },
-};
 
 const typeConfig: Record<string, { label: string; icon: string }> = {
   user_story: { label: '用户故事', icon: '📖' },
@@ -153,7 +145,6 @@ export function TaskDetailSheet({
 
   if (!task) return null;
 
-  const priority = priorityConfig[task.priority] ?? priorityConfig.P2;
   const typeInfo = typeConfig[task.type] ?? typeConfig.technical_task;
   const storyContext = task.story_id
     ? (storyContextMap?.[task.story_id] ?? undefined)
@@ -195,14 +186,7 @@ export function TaskDetailSheet({
 
               {/* 优先级 */}
               <InfoItem icon={<Tag className="h-3.5 w-3.5" />} label="优先级">
-                <span
-                  className={cn(
-                    'inline-flex items-center rounded-md border px-2 py-0.5 text-xs font-medium',
-                    priority.color
-                  )}
-                >
-                  {priority.label}
-                </span>
+                <PriorityBadge value={task.priority} isTask />
               </InfoItem>
 
               {/* 估算工时 */}
@@ -476,27 +460,6 @@ export function TaskDetailSheet({
         </div>
       </SheetContent>
     </Sheet>
-  );
-}
-
-/** 信息项 */
-function InfoItem({
-  icon,
-  label,
-  children,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="space-y-1">
-      <div className="flex items-center gap-1 text-xs text-muted-foreground">
-        {icon}
-        <span>{label}</span>
-      </div>
-      <div className="text-sm">{children}</div>
-    </div>
   );
 }
 

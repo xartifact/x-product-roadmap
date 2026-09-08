@@ -10,6 +10,7 @@ import { Badge, Card, CardContent, CardHeader, CardTitle } from '@x-cartographer
 import { UserStory } from '@/types';
 import { cn } from '@/lib/utils';
 import { StatusBadge, STORY_STATUS_OPTIONS } from '@/features/tasks/components/status-badge';
+import { PriorityBadge } from '@/components/common/priority-badge';
 import { StoryStatus } from '@/types';
 
 interface StoryCardProps {
@@ -26,12 +27,6 @@ interface StoryCardProps {
   editableStatus?: boolean;
 }
 
-const priorityConfig = {
-  high: { label: '高', variant: 'destructive' as const, className: 'bg-red-500' },
-  medium: { label: '中', variant: 'secondary' as const, className: 'bg-yellow-500' },
-  low: { label: '低', variant: 'default' as const, className: 'bg-green-500' },
-};
-
 export function StoryCard({
   story,
   journeyName,
@@ -41,7 +36,6 @@ export function StoryCard({
 }: StoryCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const priority = priorityConfig[story.priority] || priorityConfig.medium;
   const status: StoryStatus = story.status || 'backlog';
 
   const handleStatusClick = (e: React.MouseEvent) => {
@@ -85,9 +79,7 @@ export function StoryCard({
                 onClick={handleStatusClick}
               />
             )}
-            <Badge variant={priority.variant} className="text-xs">
-              {priority.label}
-            </Badge>
+            <PriorityBadge value={story.priority} className="text-xs" />
             <div className="flex items-center gap-1 text-xs text-muted-foreground">
               <Clock className="h-3 w-3" />
               {story.estimation}h

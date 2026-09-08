@@ -1,18 +1,15 @@
 /** 优先级/状态展示辅助（跨项目卡片共用） */
 import type { Priority, TaskPriority, TaskStatus } from '@x-cartographer/shared';
+import { PRIORITY_CONFIG, TASK_PRIORITY_CONFIG, PRIORITY_COLOR_VARIANTS } from '@x-cartographer/shared';
 
-export const STORY_PRIORITY_CLS: Record<Priority, string> = {
-  high: 'text-red-600',
-  medium: 'text-amber-600',
-  low: 'text-gray-500',
-};
+/** 派生自 PRIORITY_CONFIG 真源，不在此处重新定义颜色 */
+export const STORY_PRIORITY_CLS: Record<Priority, string> = Object.fromEntries(
+  Object.entries(PRIORITY_CONFIG).map(([key, config]) => [key, PRIORITY_COLOR_VARIANTS[config.color].text])
+) as Record<Priority, string>;
 
-export const TASK_PRIORITY_CLS: Record<TaskPriority, string> = {
-  P0: 'text-red-600 font-semibold',
-  P1: 'text-orange-500 font-medium',
-  P2: 'text-blue-500',
-  P3: 'text-gray-500',
-};
+export const TASK_PRIORITY_CLS: Record<TaskPriority, string> = Object.fromEntries(
+  Object.entries(TASK_PRIORITY_CONFIG).map(([key, config]) => [key, PRIORITY_COLOR_VARIANTS[config.color].text])
+) as Record<TaskPriority, string>;
 
 export interface StoryStatusMeta {
   label: string;

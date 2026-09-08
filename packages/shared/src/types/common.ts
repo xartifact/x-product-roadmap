@@ -22,6 +22,88 @@ export enum TaskPriority {
 }
 
 /**
+ * 优先级配置类型
+ *
+ * 颜色令牌故意独立于 StatusConfig.color 的 8 值枚举——优先级（紧急度）和状态（流程阶段）
+ * 是两个独立语义轴，不应共享同一色板约束。
+ */
+export interface PriorityConfig {
+  value: string;
+  label: string;
+  color: 'red' | 'orange' | 'amber' | 'blue' | 'gray';
+  order: number;
+}
+
+/**
+ * 用户故事/旅程优先级配置
+ */
+export const PRIORITY_CONFIG: Record<Priority, PriorityConfig> = {
+  [Priority.HIGH]: { value: Priority.HIGH, label: '高', color: 'red', order: 1 },
+  [Priority.MEDIUM]: { value: Priority.MEDIUM, label: '中', color: 'amber', order: 2 },
+  [Priority.LOW]: { value: Priority.LOW, label: '低', color: 'gray', order: 3 },
+};
+
+/**
+ * 任务优先级配置（P0-P3）
+ */
+export const TASK_PRIORITY_CONFIG: Record<TaskPriority, PriorityConfig> = {
+  [TaskPriority.P0]: { value: TaskPriority.P0, label: 'P0 · 紧急', color: 'red', order: 1 },
+  [TaskPriority.P1]: { value: TaskPriority.P1, label: 'P1 · 高', color: 'orange', order: 2 },
+  [TaskPriority.P2]: { value: TaskPriority.P2, label: 'P2 · 中', color: 'blue', order: 3 },
+  [TaskPriority.P3]: { value: TaskPriority.P3, label: 'P3 · 低', color: 'gray', order: 4 },
+};
+
+/**
+ * 根据优先级获取配置
+ */
+export function getPriorityConfig(priority: Priority): PriorityConfig {
+  return PRIORITY_CONFIG[priority];
+}
+
+/**
+ * 根据任务优先级获取配置
+ */
+export function getTaskPriorityConfig(priority: TaskPriority): PriorityConfig {
+  return TASK_PRIORITY_CONFIG[priority];
+}
+
+/**
+ * 优先级颜色令牌 → 三种渲染形态（纯文字 / 徽章 / 卡片左色条）对应的 Tailwind 类
+ */
+export const PRIORITY_COLOR_VARIANTS: Record<
+  PriorityConfig['color'],
+  { text: string; badge: string; leftBorder: string }
+> = {
+  red: {
+    text: 'text-red-600 dark:text-red-400',
+    badge: 'border-red-200 bg-red-50 text-red-600 dark:border-red-900 dark:bg-red-950 dark:text-red-400',
+    leftBorder: 'border-l-red-500',
+  },
+  orange: {
+    text: 'text-orange-600 dark:text-orange-400',
+    badge:
+      'border-orange-200 bg-orange-50 text-orange-600 dark:border-orange-900 dark:bg-orange-950 dark:text-orange-400',
+    leftBorder: 'border-l-orange-400',
+  },
+  amber: {
+    text: 'text-amber-600 dark:text-amber-400',
+    badge:
+      'border-amber-200 bg-amber-50 text-amber-600 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-400',
+    leftBorder: 'border-l-amber-400',
+  },
+  blue: {
+    text: 'text-blue-600 dark:text-blue-400',
+    badge: 'border-blue-200 bg-blue-50 text-blue-600 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-400',
+    leftBorder: 'border-l-blue-400',
+  },
+  gray: {
+    text: 'text-gray-500 dark:text-gray-400',
+    badge: 'border-gray-200 bg-gray-50 text-gray-600 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400',
+    leftBorder: 'border-l-transparent',
+  },
+};
+
+/**
  * 任务类型
  */
 export enum TaskType {

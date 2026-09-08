@@ -26,8 +26,10 @@ import { Button, Badge, Separator } from '@x-cartographer/ui';
 import { StoryTaskPanel } from './story-task-panel';
 import { MilestoneSelect } from '@/features/roadmap/components/milestone-select';
 import { StatusBadge } from '@/features/tasks/components/status-badge';
+import { PriorityBadge } from '@/components/common/priority-badge';
+import { InfoItem } from '@/components/common/info-item';
 import type { UserStory } from '@/types/user-story';
-import { Priority, type Project } from '@/types';
+import type { Project } from '@/types';
 import { cn } from '@/lib/utils';
 import type { StoryStatus } from '@/types';
 
@@ -45,41 +47,6 @@ interface StoryDetailPanelProps {
   className?: string;
 }
 
-const priorityLabels: Record<Priority, string> = {
-  [Priority.HIGH]: '高优先级',
-  [Priority.MEDIUM]: '中优先级',
-  [Priority.LOW]: '低优先级',
-};
-
-const priorityColors: Record<Priority, string> = {
-  [Priority.HIGH]: 'text-red-600',
-  [Priority.MEDIUM]: 'text-amber-600',
-  [Priority.LOW]: 'text-gray-500',
-};
-
-
-
-/** 信息项（对齐任务详情 InfoItem） */
-function InfoItem({
-  icon,
-  label,
-  children,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="space-y-1">
-      <div className="flex items-center gap-1 text-xs text-muted-foreground">
-        {icon}
-        <span>{label}</span>
-      </div>
-      <div className="text-sm">{children}</div>
-    </div>
-  );
-}
-
 export const StoryDetailPanel = memo<StoryDetailPanelProps>(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars -- onClose 为公开回调，供调用方 Sheet 关闭
   ({ story, journeyName, project, onClose, onEdit, onDelete, className }) => {
@@ -92,7 +59,7 @@ export const StoryDetailPanel = memo<StoryDetailPanelProps>(
     const taskCount = tasks.length;
 
     return (
-      <div className={cn('flex h-full w-full flex-col overflow-hidden', className)}>
+      <div className={cn('flex h-full w-full flex-col overflow-y-auto', className)}>
         {/* 头部（对齐任务详情 SheetHeader） */}
         <div className="flex items-start gap-3 space-y-1">
           <div className="min-w-0 flex-1 space-y-1.5">
@@ -129,20 +96,7 @@ export const StoryDetailPanel = memo<StoryDetailPanelProps>(
               </InfoItem>
               {/* 优先级 */}
               <InfoItem icon={<Tag className="h-3.5 w-3.5" />} label="优先级">
-                <span
-                  className={cn(
-                    'inline-flex items-center rounded-md border px-2 py-0.5 text-xs font-medium',
-                    story.priority === 'high' &&
-                      'border-red-200 bg-red-50 text-red-600',
-                    story.priority === 'medium' &&
-                      'border-amber-200 bg-amber-50 text-amber-600',
-                    story.priority === 'low' &&
-                      'border-green-200 bg-green-50 text-green-600',
-                    priorityColors[story.priority]
-                  )}
-                >
-                  {priorityLabels[story.priority]}
-                </span>
+                <PriorityBadge value={story.priority} />
               </InfoItem>
               {/* 估算工时 */}
               <InfoItem icon={<Clock className="h-3.5 w-3.5" />} label="估算工时">

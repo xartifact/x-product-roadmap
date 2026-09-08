@@ -8,9 +8,8 @@ import { memo } from 'react';
 import type { UserJourney, UserStory } from '@/types';
 import { cn } from '@/lib/utils';
 import { Card, CardContent } from '@x-cartographer/ui';
-import { Badge } from '@x-cartographer/ui';
 import { Clock, Tag } from 'lucide-react';
-import { Priority } from '@/types';
+import { PriorityBadge, PriorityText, priorityLeftBorderCls } from '@/components/common/priority-badge';
 
 interface JourneyColumnProps {
   journey: UserJourney;
@@ -22,19 +21,6 @@ interface JourneyColumnProps {
   selectedStoryId?: string;
 }
 
-// 优先级颜色
-const priorityColors: Record<Priority, string> = {
-  [Priority.HIGH]: 'bg-red-100 border-red-300 text-red-800 dark:bg-red-900/30 dark:border-red-700 dark:text-red-300',
-  [Priority.MEDIUM]: 'bg-amber-100 border-amber-300 text-amber-800 dark:bg-amber-900/30 dark:border-amber-700 dark:text-amber-300',
-  [Priority.LOW]: 'bg-green-100 border-green-300 text-green-800 dark:bg-green-900/30 dark:border-green-700 dark:text-green-300',
-};
-
-const priorityBadgeVariants: Record<Priority, 'destructive' | 'default' | 'secondary'> = {
-  [Priority.HIGH]: 'destructive',
-  [Priority.MEDIUM]: 'default',
-  [Priority.LOW]: 'secondary',
-};
-
 // 故事卡片组件
 function StoryCard({ story, journeyName, isSelected, onSelect }: {
   story: UserStory;
@@ -45,10 +31,10 @@ function StoryCard({ story, journeyName, isSelected, onSelect }: {
   return (
     <Card
       className={cn(
-        'w-64 cursor-pointer transition-all duration-200',
+        'w-64 cursor-pointer border-l-4 transition-all duration-200',
         'hover:shadow-md hover:scale-[1.02]',
         isSelected ? 'ring-2 ring-primary shadow-md' : 'border-border',
-        priorityColors[story.priority]
+        priorityLeftBorderCls(story.priority)
       )}
       onClick={() => onSelect(story)}
     >
@@ -56,9 +42,7 @@ function StoryCard({ story, journeyName, isSelected, onSelect }: {
         {/* 标题行 */}
         <div className="flex items-start justify-between gap-2">
           <span className="text-xs font-mono text-muted-foreground">{story.id}</span>
-          <Badge variant={priorityBadgeVariants[story.priority]} className="text-xs">
-            {story.priority}
-          </Badge>
+          <PriorityBadge value={story.priority} className="text-xs" />
         </div>
 
         {/* 故事标题 */}
@@ -90,12 +74,6 @@ function StoryCard({ story, journeyName, isSelected, onSelect }: {
 export const JourneyColumn = memo<JourneyColumnProps>(
   ({ journey, stories, journeyName, columnWidth, rowHeight, onStorySelect, selectedStoryId }) => {
     const journeyPriority = journey.priority ?? 'medium';
-    const journeyPriorityColor =
-      journeyPriority === 'high'
-        ? 'bg-red-100 border-red-300 text-red-800 dark:bg-red-900/30 dark:border-red-700 dark:text-red-300'
-        : journeyPriority === 'low'
-          ? 'bg-green-100 border-green-300 text-green-800 dark:bg-green-900/30 dark:border-green-700 dark:text-green-300'
-          : 'bg-amber-100 border-amber-300 text-amber-800 dark:bg-amber-900/30 dark:border-amber-700 dark:text-amber-300';
 
     return (
       <div
@@ -111,18 +89,7 @@ export const JourneyColumn = memo<JourneyColumnProps>(
             <CardContent className="p-4 text-center">
               <div className="flex items-center justify-center gap-2">
                 <h3 className="font-semibold text-sm line-clamp-2">{journeyName}</h3>
-                <span
-                  className={cn(
-                    'inline-flex items-center rounded-md border px-1.5 py-0.5 text-[10px] font-medium',
-                    journeyPriorityColor
-                  )}
-                >
-                  {journeyPriority === 'high'
-                    ? '高'
-                    : journeyPriority === 'low'
-                      ? '低'
-                      : '中'}
-                </span>
+                <PriorityText value={journeyPriority} className="text-[10px]" />
               </div>
               <p className="text-xs text-muted-foreground mt-1">
                 {stories.length} 个故事

@@ -18,7 +18,7 @@ import {
   CollapsibleTrigger,
 } from '@x-cartographer/ui';
 import { useStoryMapStore } from '../stores/story-map-store';
-import { Priority, StoryStatus } from '@/types';
+import { Priority, StoryStatus, PRIORITY_CONFIG, PRIORITY_COLOR_VARIANTS } from '@/types';
 import { UserJourney } from '@/types/user-journey';
 import { STORY_STATUS_OPTIONS } from '@/features/tasks/components/status-badge';
 import { cn } from '@/lib/utils';
@@ -30,11 +30,11 @@ interface FilterPanelProps {
   className?: string;
 }
 
-const priorityOptions = [
-  { value: Priority.HIGH, label: '高优先级', color: 'text-red-600 dark:text-red-400' },
-  { value: Priority.MEDIUM, label: '中优先级', color: 'text-amber-600 dark:text-amber-400' },
-  { value: Priority.LOW, label: '低优先级', color: 'text-green-600 dark:text-green-400' },
-];
+const priorityOptions = Object.values(PRIORITY_CONFIG).map((config) => ({
+  value: config.value as Priority,
+  label: `${config.label}优先级`,
+  color: PRIORITY_COLOR_VARIANTS[config.color].text,
+}));
 export const FilterPanel = memo<FilterPanelProps>(({ journeys, milestones = [], className }) => {
   const {
     filter,

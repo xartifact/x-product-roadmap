@@ -29,7 +29,8 @@ import {
 } from '@x-cartographer/ui';
 import { StatusFilterBar } from './status-filter';
 import { StatusBadge, TASK_STATUS_OPTIONS } from './status-badge';
-import type { Task, TaskStatus, TaskPriority, StoryStatus } from '@/types';
+import { PriorityBadge } from '@/components/common/priority-badge';
+import type { Task, TaskStatus, StoryStatus } from '@/types';
 
 interface TaskListProps {
   /** 任务列表 */
@@ -65,16 +66,6 @@ interface TaskListProps {
   /** 自定义类名 */
   className?: string;
 }
-
-const priorityConfig: Record<
-  TaskPriority,
-  { label: string; variant: 'destructive' | 'secondary' | 'default' }
-> = {
-  P0: { label: 'P0', variant: 'destructive' },
-  P1: { label: 'P1', variant: 'default' },
-  P2: { label: 'P2', variant: 'secondary' },
-  P3: { label: 'P3', variant: 'secondary' },
-};
 
 const typeConfig: Record<string, { label: string; icon: string }> = {
   user_story: { label: '用户故事', icon: '📖' },
@@ -244,7 +235,6 @@ function TaskCard({
   onExecute,
   isExecuting = false,
 }: TaskCardProps) {
-  const priority = priorityConfig[task.priority];
   const typeInfo = typeConfig[task.type] || typeConfig.technical_task;
 
   return (
@@ -273,9 +263,7 @@ function TaskCard({
               <span className="font-mono text-xs text-muted-foreground">
                 {task.id}
               </span>
-              <Badge variant={priority.variant} className="text-xs">
-                {priority.label}
-              </Badge>
+              <PriorityBadge value={task.priority} isTask className="text-xs" />
               {isExecuting && (
                 <Badge
                   variant="outline"

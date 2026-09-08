@@ -10,19 +10,13 @@ import {
   JourneyEditDialog,
 } from '@/features/story-map/components';
 import { useCreateJourney, useUpdateJourney, useDeleteJourney } from '@/lib/api/hooks';
+import { PriorityText } from '@/components/common/priority-badge';
 import type { Project, UserJourney } from '@/types';
 
 interface JourneysPageProps {
   /** 当前项目 */
   project: Project;
 }
-
-/** 优先级标签 */
-const PRIORITY_LABEL: Record<string, { label: string; cls: string }> = {
-  high: { label: '高', cls: 'text-red-600' },
-  medium: { label: '中', cls: 'text-amber-600' },
-  low: { label: '低', cls: 'text-gray-500' },
-};
 
 export function JourneysPage({ project: initialProject }: JourneysPageProps) {
   const createJourney = useCreateJourney();
@@ -135,7 +129,6 @@ export function JourneysPage({ project: initialProject }: JourneysPageProps) {
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {journeys.map((j, index) => {
-            const pl = PRIORITY_LABEL[j.priority ?? 'medium'];
             return (
               <Card
                 key={j.id}
@@ -146,9 +139,7 @@ export function JourneysPage({ project: initialProject }: JourneysPageProps) {
                   {/* 头：ID + 优先级 */}
                   <div className="flex items-center justify-between gap-1">
                     <span className="font-mono text-xs text-muted-foreground">{j.id}</span>
-                    <span className={`text-xs font-semibold ${pl?.cls ?? ''}`}>
-                      {pl?.label ?? j.priority}
-                    </span>
+                    <PriorityText value={j.priority ?? 'medium'} />
                   </div>
                   {/* 名称 */}
                   <h3 className="text-base font-semibold leading-snug">{j.name}</h3>
