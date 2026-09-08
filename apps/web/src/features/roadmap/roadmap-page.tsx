@@ -18,11 +18,13 @@ import {
   useCreateMilestone,
   useUpdateMilestone,
   useDeleteMilestone,
+  useUpdateStory,
+  useDeleteStory,
 } from '@/lib/api/hooks';
 import { MilestoneDialog } from './components/milestone-dialog';
 import { StoryCard } from './components/story-card';
 import { RoadmapTasksView } from './components/roadmap-tasks-view';
-import { StoryDetailPanel } from '@/features/story-map/components/story-detail-panel';
+import { StoryDetailPanel, StoryEditDialog } from '@/features/story-map/components';
 import type { UserStory, Milestone } from '@/types';
 
 interface RoadmapPageProps {
@@ -53,6 +55,8 @@ export function RoadmapPage({ projectId }: RoadmapPageProps) {
   const createMilestone = useCreateMilestone();
   const updateMilestone = useUpdateMilestone();
   const deleteMilestone = useDeleteMilestone();
+  const updateStory = useUpdateStory();
+  const deleteStory = useDeleteStory();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<MilestoneJson | null>(null);
   const [activeTab, setActiveTab] = useState<'lanes' | 'tasks'>('lanes');
@@ -61,6 +65,8 @@ export function RoadmapPage({ projectId }: RoadmapPageProps) {
     story: UserStory;
     journeyName: string;
   } | null>(null);
+  // 编辑中的故事
+  const [editingStory, setEditingStory] = useState<UserStory | null>(null);
 
   // 待规划池：未排期且未取消的故事（milestone_id 为空）
   const unplannedStories = useMemo(() => {
@@ -129,6 +135,29 @@ export function RoadmapPage({ projectId }: RoadmapPageProps) {
       return;
     }
     await deleteMilestone.mutateAsync({ id: m.id, projectId });
+  }
+
+  async function handleUpdateStory(updated: UserStory) {
+    await updateStory.mutateAsync({
+      id: updated.id,
+      title: updated.title,
+      description: updated.description,
+      priority: updated.priority,
+      estimation: updated.estimation,
+      acceptanceCriteria: updated.acceptance_criteria,
+      tags: updated.tags,
+      milestoneId: updated.milestone_id ?? null,
+    });
+    setEditingStory(null);
+    setSelectedStory((prev) => (prev ? { ...prev, story: updated } : prev));
+  }
+
+  async function handleDeleteStory(s: UserStory) {
+    if (!window.confirm(`确定删除故事「${s.title}」吗？该故事下的任务将一并删除。`)) {
+      return;
+    }
+    await deleteStory.mutateAsync({ id: s.id });
+    setSelectedStory(null);
   }
 
   if (projectLoading || milestonesLoading) {
@@ -302,11 +331,21 @@ export function RoadmapPage({ projectId }: RoadmapPageProps) {
               journeyName={selectedStory.journeyName}
               project={project}
               onClose={() => setSelectedStory(null)}
+              onEdit={(s) => setEditingStory(s)}
+              onDelete={handleDeleteStory}
               className="w-full h-full"
             />
           )}
         </SheetContent>
       </Sheet>
+
+      {/* 故事编辑对话框 */}
+      <StoryEditDialog
+        open={!!editingStory}
+        story={editingStory}
+        onOpenChange={(open) => { if (!open) setEditingStory(null); }}
+        onSave={handleUpdateStory}
+      />
 
       <MilestoneDialog
         open={dialogOpen}
