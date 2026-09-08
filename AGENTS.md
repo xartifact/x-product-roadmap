@@ -1,7 +1,7 @@
 <!-- gitnexus:start -->
 # GitNexus — Code Intelligence
 
-This project is indexed by GitNexus as **x-product-roadmap** (1606 symbols, 3607 relationships, 75 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
+This project is indexed by GitNexus as **x-cartographer** (2346 symbols, 4367 relationships, 185 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
 
 > Index stale? Run `node .gitnexus/run.cjs analyze` from the project root — it auto-selects an available runner. No `.gitnexus/run.cjs` yet? `npx gitnexus analyze` (npm 11 crash → `npm i -g gitnexus`; #1939).
 
@@ -25,10 +25,10 @@ This project is indexed by GitNexus as **x-product-roadmap** (1606 symbols, 3607
 
 | Resource | Use for |
 |----------|---------|
-| `gitnexus://repo/x-product-roadmap/context` | Codebase overview, check index freshness |
-| `gitnexus://repo/x-product-roadmap/clusters` | All functional areas |
-| `gitnexus://repo/x-product-roadmap/processes` | All execution flows |
-| `gitnexus://repo/x-product-roadmap/process/{name}` | Step-by-step execution trace |
+| `gitnexus://repo/x-cartographer/context` | Codebase overview, check index freshness |
+| `gitnexus://repo/x-cartographer/clusters` | All functional areas |
+| `gitnexus://repo/x-cartographer/processes` | All execution flows |
+| `gitnexus://repo/x-cartographer/process/{name}` | Step-by-step execution trace |
 
 ## CLI
 
