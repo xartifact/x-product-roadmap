@@ -1273,7 +1273,7 @@ export function StoryMapCanvas({
 
       {/* 详情面板 — 浮层，右侧 */}
       {project && selectedStoryLive && (
-        <div className="absolute bottom-4 right-4 top-4 z-10 overflow-y-auto rounded-lg shadow-lg">
+        <div className="absolute bottom-4 right-4 top-4 z-10 w-96 overflow-y-auto rounded-lg border bg-background p-4 shadow-lg">
           <StoryDetailPanel
             story={selectedStoryLive}
             journeyName={selectedJourneyName}
